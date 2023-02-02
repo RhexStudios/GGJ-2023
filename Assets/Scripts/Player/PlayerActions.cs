@@ -11,42 +11,68 @@ public class PlayerActions : MonoBehaviour
     */
 
     //Semear 
-    public GameObject[] seeds;
-    public float seedTime = .3f;
+    public float seedDuration = 1f;
     public bool isSeeding;
     public bool canSeed;
+    public SeedGround sg;
 
-    void Start() {
-        canSeed = false;
+    public Rigidbody2D rb;
+
+    void Start() {    
         isSeeding = false;
+        canSeed = false;
+
+        rb = GetComponent<Rigidbody2D>();
     }
 
     void Update()
     {
 
         Seeding();
+        RefreshSeed();
     }
 
+    #region - Seed Action - 
 
-    public void OnTriggerStay2d(Collider2D col) 
+    public void Seeding() 
     {
-        if(col.gameObject.tag == "seedground")
-            canSeed = true;
+        if(Input.GetKeyDown("x") && canSeed && ( sg.isEmpty == true ))
+        {
+            isSeeding = true;
+        }
     }
 
-    public void OnTriggerExit2D(Collider2D col) {
+    public void OnTriggerEnter2D(Collider2D col) 
+    {
+        if(col.gameObject.tag == "seedground") 
+        {
+            canSeed = true;
+            sg = col.gameObject.GetComponent<SeedGround>();
+        }
+    }
+
+    public void OnTriggerExit2D(Collider2D col) 
+    {
         if(col.gameObject.tag == "seedground")
             canSeed = false;
     }
 
-    public void Seeding() 
+    public void RefreshSeed() 
     {
-        int seed;
-        if(Input.GetKeyDown("x") && canSeed)
+        if (isSeeding) 
         {
-            isSeeding = true;
-            seed = Random.Range( 0, seeds.Length );
-            Instantiate(seeds[seed]);
+            Vector3 stay = new Vector3(0f, 0f, 0f);
+            rb.velocity = stay;
+            seedDuration -= Time.deltaTime;
+            if (seedDuration <= 0) 
+            {
+                seedDuration = 1f;
+                isSeeding = false;
+            }
         }
     }
+
+    #endregion
+
+
 }
