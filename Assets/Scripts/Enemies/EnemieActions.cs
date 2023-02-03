@@ -5,6 +5,8 @@ using UnityEngine;
 public class EnemieActions : MonoBehaviour
 {
 	public Animator anim;
+	public SpriteRenderer sprite;
+
 	private int life = 1;
 	public float moveSpeed = 1f;
 
@@ -17,7 +19,7 @@ public class EnemieActions : MonoBehaviour
 	void Start()
 	{
 		anim = GetComponent<Animator>();
-		transform.position - pointsToMove[startingPoint].transform.position;
+		transform.position = pointsToMove[startingPoint].transform.position;
 	}
 
 	void Update()
@@ -42,9 +44,16 @@ public class EnemieActions : MonoBehaviour
 		}
 	}
 
-	void AttackMove()
+    private void FixedUpdate()
 	{
-		if ( MeleeCheckAttack.checkAttack == true)
+		Move();
+	}
+
+	void Move()
+	{
+		transform.position = Vector2.MoveTowards(transform.position, pointsToMove[startingPoint].transform.position, moveSpeed * Time.deltaTime);
+
+		if ( MeeleeCheckAttack.checkAttack == true)
 		{
 			StartCoroutine("Attack");
 		}
