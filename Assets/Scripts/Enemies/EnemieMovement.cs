@@ -45,5 +45,4 @@ public class EnemieMovement : MonoBehaviour
                 facingRight = false;
         }
     }
-
 }
